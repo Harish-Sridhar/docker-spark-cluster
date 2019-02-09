@@ -1,0 +1,32 @@
+version: '3'
+services:
+  spark-master:
+   build: .
+   ports:
+   - "7077:7077"
+   - "8080:8080"
+   - "4040:4040"
+   environment:
+     SPARK_MASTER_HOST: spark-master
+     SPARK_COMMAND: master
+   container_name: spark_master
+  spark-slave1:
+   build: .
+   ports:
+   - "8081:8081"
+   depends_on:
+   - spark-master
+   environment:
+     SPARK_MASTER_URL: spark://spark-master:7077
+     SPARK_COMMAND: slave
+   container_name: spark_slave_1
+  spark-slave2:
+   build: .
+   ports:
+   - "8082:8081"
+   depends_on:
+   - spark-master
+   environment:
+     SPARK_MASTER_URL: spark://spark-master:7077
+     SPARK_COMMAND: slave
+   container_name: spark_slave_2
